@@ -4,12 +4,12 @@ from aiogoogle import Aiogoogle
 
 from app.core.config import settings
 
-FORMAT = "%Y/%m/%d %H:%M:%S"
+FORMAT = '%Y/%m/%d %H:%M:%S'
 
 
 async def spreadsheets_create(aiogoogle: Aiogoogle) -> str:
     date = datetime.now().strftime(FORMAT)
-    sercice = await aiogoogle.discover('sheets', 'v4')
+    sercice = await aiogoogle.discover('sheets', settings.version_sheets)
     spreadsheet_body = {
         'properties': {
             'title': f'Отчёт на {date}',
@@ -32,7 +32,7 @@ async def spreadsheets_create(aiogoogle: Aiogoogle) -> str:
 
 
 async def set_user_permissions(
-    spreadsheetId: str,
+    spreadsheet_id: str,
     aiogoogle: Aiogoogle
 ) -> None:
     permission_body = {
@@ -40,10 +40,10 @@ async def set_user_permissions(
         'role': 'writer',
         'emailAddress': settings.email
     }
-    service = await aiogoogle.discover('drive', 'v3')
+    service = await aiogoogle.discover('drive', settings.version_drive)
     await aiogoogle.as_service_account(
         service.permissions.create(
-            fileId=spreadsheetId,
+            fileId=spreadsheet_id,
             json=permission_body,
             fields='id'
         )
@@ -51,12 +51,12 @@ async def set_user_permissions(
 
 
 async def spreadsheets_update_value(
-        spreadsheetId: str,
+        spreadsheet_id: str,
         projects: list,
         aiogoogle: Aiogoogle
 ) -> None:
     now_date = datetime.now().strftime(FORMAT)
-    service = await aiogoogle.discover('sheets', 'v4')
+    service = await aiogoogle.discover('sheets', settings.version_sheets)
     table_body = [
         ['Отчёт от', now_date],
         ['Топ проектов по скорости закрытия'],
@@ -74,7 +74,7 @@ async def spreadsheets_update_value(
     }
     await aiogoogle.as_service_account(
         service.spreadsheets.values.update(
-            spreadsheetId=spreadsheetId,
+            spreadsheetId=spreadsheet_id,
             range='A1:C100',
             valueInputOption='USER_ENTERED',
             json=update_body

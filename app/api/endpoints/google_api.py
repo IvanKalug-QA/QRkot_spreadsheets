@@ -29,7 +29,7 @@ async def get_report(
     projects = await charity_project_crud.get_projects_by_completion_rate(
         session
     )
-    spreadsheetsId = await spreadsheets_create(aiogoogle)
-    await spreadsheets_update_value(spreadsheetsId, projects, aiogoogle)
-    await set_user_permissions(spreadsheetsId, aiogoogle)
+    spreadsheets_id = await spreadsheets_create(aiogoogle)
+    await spreadsheets_update_value(spreadsheets_id, projects, aiogoogle)
+    await set_user_permissions(spreadsheets_id, aiogoogle)
     return 'OK'

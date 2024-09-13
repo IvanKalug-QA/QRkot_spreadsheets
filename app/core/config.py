@@ -20,6 +20,8 @@ class Settings(BaseSettings):
     auth_provider_x509_cert_url: Optional[str] = None
     client_x509_cert_url: Optional[str] = None
     email: Optional[str] = None
+    version_sheets: Optional[str] = None
+    version_drive: Optional[str] = None
 
     class Config:
         env_file = '.env'
